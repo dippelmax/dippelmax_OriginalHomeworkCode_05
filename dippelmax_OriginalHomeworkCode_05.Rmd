@@ -1,0 +1,107 @@
+---
+title: "dippelmax_OriginalHomeworkCode_05"
+author: "Max Dippel"
+date: "11/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+monkey <- read.csv("KamilarAndCooperData.csv", header = TRUE)
+
+```
+
+[1] Using the “KamilarAndCooperData.csv” dataset, run a linear regression looking at log(HomeRange_km2) in relation to log(Body_mass_female_mean) and report your β coeffiecients (slope and intercept).
+
+
+```{r}
+lm1 <- lm(log(HomeRange_km2) ~ log(Body_mass_female_mean), data = monkey)
+
+summary(lm1)
+# B0(intercept) = -9.44123
+# B1(slope) = 1.03643
+
+```
+
+
+[2] Then, use bootstrapping to sample from your data 1000 times with replacement, each time fitting the same model and calculating the same coefficients. This generates a sampling distribution for each β coefficient.
+```{r}
+
+coef(lm(sample(log(HomeRange_km2), 30, replace = TRUE) ~ sample(log(Body_mass_female_mean), 30, replace = TRUE), data = monkey))
+
+
+lm2 <- lm(sample(log(HomeRange_km2), 30, replace = TRUE) ~ sample(log(Body_mass_female_mean), 30, replace = TRUE), data = monkey)
+
+set <- NULL  
+for (i in 1:1000) {
+set[i] <- lm(log(HomeRange_km2) ~ log(Body_mass_female_mean), data = monkey)
+}
+
+lm.boot(lm1, R= 1000)
+lboot <- lm.boot(lm1, R = 1000)
+?lm.boot()
+??simpleboot
+install.packages("simpleboot")
+
+
+sample_coef_intercept <- NULL
+sample_coef_x1 <- NULL
+
+sample_d <- monkey[sample(1:30, replace = TRUE), ]
+
+
+for (i in 1:1000) {
+  #Creating a resampled dataset from the sample data
+  sample_d <- monkey[sample(1:30, replace = TRUE), ]
+  
+  #Running the regression on these data
+  model_bootstrap <- lm(y ~ x, data = sample_d)
+  
+  #Saving the coefficients
+  sample_coef_intercept <-
+    c(sample_coef_intercept, model_bootstrap$coefficients[1])
+  
+  sample_coef_x1 <-
+    c(sample_coef_x1, model_bootstrap$coefficients[2])
+}
+
+
+
+
+
+```
+
+Estimate the standard error for each of your β coefficients as the standard deviation of the sampling distribution from your bootstrap and determine the 95% CI for each of your β coefficients based on the appropriate quantiles from your sampling distribution.
+```{r}
+
+```
+
+How does the former compare to the SE estimated from your entire dataset using the formula for standard error implemented in lm()?
+```{r}
+
+```
+
+How does the latter compare to the 95% CI estimated from your entire dataset?
+```{r}
+
+```
+
+
+EXTRA CREDIT
+Write a FUNCTION that takes as its arguments a dataframe, “d”, a linear model, “m” (as a character string, e.g., “logHR~logBM”), a user-defined confidence interval level, “conf.level” (with default = 0.95), and a number of bootstrap replicates, “n” (with default = 1000). Your function should return a dataframe that includes: beta coefficient names; beta coefficients, standard errors, and upper and lower CI limits for the linear model based on your entire dataset; and mean beta coefficient estimates, SEs, and CI limits for those coefficients based on your bootstrap.
+
+```{r}
+
+```
+
+
+EXTRA EXTRA CREDIT
+
+Graph each beta value from the linear model and its corresponding mean value, lower CI and upper CI from a bootstrap as a function of number of bootstraps from 10 to 200 by 10s. HINT: the beta value from the linear model will be the same for all bootstraps and the mean beta value may not differ that much!
+
+```{r}
+
+```
+
+
+
