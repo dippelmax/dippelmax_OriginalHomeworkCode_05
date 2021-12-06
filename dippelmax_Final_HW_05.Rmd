@@ -63,7 +63,7 @@ quantile(boot_slope, c(0.025, 0.975))
 
 ```
 
-
+*good!*
 
 How does the former compare to the SE estimated from your entire dataset using the formula for standard error implemented in lm()?
 ```{r}
